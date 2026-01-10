@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void trim(char* pBuffer, size_t* pLenght);
+void trim(char* pBuffer, size_t* pLength);
 
 int main() {
     // Создаём буфер на 16 символов
@@ -17,7 +17,10 @@ int main() {
         if (length >= size - 1) {
             size *= 2;
             char* tmpBuffer = realloc(buffer, size);
-            if (!tmpBuffer) return 1;
+            if (!tmpBuffer) {
+                free(buffer);
+                return 1;
+            }
             buffer = tmpBuffer;
         }
         buffer[length] = (char)tmpChar;
@@ -31,27 +34,31 @@ int main() {
     return 0;
 }
 
-void trim(char* pBuffer, size_t* pLenght) {
+void trim(char* pBuffer, size_t* pLength) {
+    // Обрезка пробелов слева
     size_t start = 0;
-    while (pBuffer[start] == ' ') start++;
+    while (start < *pLength && pBuffer[start] == ' ') start++;
 
-    if (start == *pLenght) {
+    if (start == *pLength) {
+        // Строка полностью из пробелов
         pBuffer[0] = '\0';
-        *pLenght = 0;
+        *pLength = 0;
         return;
     }
 
     if (start > 0) {
-        for (size_t i = start; i <= *pLenght; i++) {
+        for (size_t i = start; i <= *pLength; i++) {
             pBuffer[i - start] = pBuffer[i];
         }
-        *pLenght -= start;
+        *pLength -= start;
     }
 
-    size_t end = *pLenght - 1;
-    while (pBuffer[end] == ' ') end--;
+    // Обрезка пробелов справа
+    if (*pLength == 0) return;
 
-    if (end > 0) {
-        pBuffer[end + 1] = '\0';
-    }
+    size_t end = *pLength - 1;
+    while (end != (size_t)-1 && pBuffer[end] == ' ') end--;
+
+    pBuffer[end + 1] = '\0';
+    *pLength = end + 1;
 }

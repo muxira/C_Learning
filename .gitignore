@@ -1,0 +1,22 @@
+# Скомпилированные бинарники
+*.exe
+*.out
+*.o
+*.obj
+*.a
+*.so
+*.dll
+
+# Каталоги сборки
+build/
+bin/
+Debug/
+Release/
+
+# Файлы временные и IDE
+*.log
+*.tmp
+*.swp
+*.user
+*.vscode/
+*.idea/
